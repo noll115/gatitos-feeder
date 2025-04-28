@@ -24,9 +24,9 @@ services:
     #   - "1883:1883" # MQTT port (for ESP8266)
     #   - "9001:9001" # WebSocket port (for Next.js)
     volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - mosq_data:/mosquitto/data
-      - mosq_log:/mosquitto/log
+      - ./mosquitto/config:/mosquitto/config:rw
+      - mosq_data:/mosquitto/data:rw
+      - mosq_log:/mosquitto/log:rw
     restart: unless-stopped
 
 volumes:
