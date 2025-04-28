@@ -18,7 +18,7 @@ RUN \
   else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
   fi
 
-COPY src ./src
+COPY app ./app
 COPY public ./public
 COPY next.config.ts .
 COPY tsconfig.json .
@@ -64,7 +64,7 @@ ARG NEXT_PUBLIC_MQTT_HOST
 ENV NEXT_PUBLIC_MQTT_HOST=${NEXT_PUBLIC_MQTT_HOST}
 
 # Uncomment the following line to disable telemetry at run time
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Note: Don't expose ports here, Compose will handle that for us
 
