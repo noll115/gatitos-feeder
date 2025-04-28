@@ -6,8 +6,8 @@ services:
       dockerfile: prod.Dockerfile
     # ports:
     #   - "3000:3000"
-    # networks:
-    #   - proxy
+    networks:
+      - proxy
     environment:
       - NEXT_PUBLIC_MQTT_HOST=ws://mosquitto:9001
     depends_on:
@@ -18,16 +18,20 @@ services:
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto:2.0.21
-    # networks:
-    #   - proxy
+    networks:
+      - proxy
     # ports:
     #   - "1883:1883" # MQTT port (for ESP8266)
     #   - "9001:9001" # WebSocket port (for Next.js)
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - mosq_data:/mosquitto/data
+      - mosq_log:/mosquitto/log
     restart: unless-stopped
+
+volumes:
+  mosq_data:
+  mosq_log:
 
 networks:
   proxy:
