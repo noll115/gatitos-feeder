@@ -66,6 +66,9 @@ ENV NEXT_PUBLIC_MQTT_HOST=${NEXT_PUBLIC_MQTT_HOST}
 # Uncomment the following line to disable telemetry at run time
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Ensure logs.json is created
+RUN touch ./logs.json && chown nextjs:nodejs ./logs.json && echo "{}" > ./logs.json
+
 # Note: Don't expose ports here, Compose will handle that for us
 
 CMD ["node", "server.js"]
