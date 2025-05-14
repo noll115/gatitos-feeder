@@ -320,9 +320,9 @@ const LogsDisplay = ({ id }: { id: string }) => {
         onChange={handleCheckboxChange}
       />
       <div className="collapse-title font-light">Logs</div>
-      <div className="collapse-content text-sm">
+      <div className="collapse-content text-sm ">
         {logs.length > 0 ? (
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-2 max-h-36 overflow-y-auto">
             {logs.map((log) => (
               <li
                 key={log.time}

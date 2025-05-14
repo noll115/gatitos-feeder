@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
+import path from "path";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*", // Allow all origins (replace '*' with specific origin for better security)
@@ -22,21 +23,18 @@ export interface Logs {
 }
 
 const logLength = Number(process.env.LOG_LENGTH) ?? 10;
-
-let logs: Logs = {};
-
-const logFilePath = "./logs.json";
+const logsPath = path.join(process.cwd(), "logs.json");
 
 async function loadLogs() {
   try {
-    const data = await fs.readFile(logFilePath, "utf-8");
-    logs = JSON.parse(data);
-  } catch (error) {
+    const data = await fs.readFile(logsPath, "utf-8");
+    return JSON.parse(data);
+  } catch (error: unknown) {
     console.error("Error loading logs:", error);
+    await fs.writeFile(logsPath, JSON.stringify({}), "utf-8");
+    return {};
   }
 }
-
-await loadLogs();
 
 export async function OPTIONS() {
   return new Response(null, {
@@ -55,6 +53,7 @@ export async function POST(request: NextRequest) {
       headers: corsHeaders,
     });
   }
+  const logs = await loadLogs();
   if (!logs[id]) {
     logs[id] = [];
   }
@@ -63,7 +62,7 @@ export async function POST(request: NextRequest) {
     logs[id].pop();
   }
   try {
-    await fs.writeFile(logFilePath, JSON.stringify(logs));
+    await fs.writeFile(logsPath, JSON.stringify(logs));
   } catch (error) {
     console.error("Error writing logs:", error);
   }
@@ -81,6 +80,8 @@ export async function GET(request: NextRequest) {
       status: 400,
     });
   }
+  const logs = await loadLogs();
+
   if (!logs[id]) {
     return NextResponse.json([]);
   }
