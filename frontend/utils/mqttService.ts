@@ -12,14 +12,19 @@ export const MQTT_STATUS = [
 
 export type MqttStatusType = (typeof MQTT_STATUS)[number];
 
+const mqttURL = process.env.NEXT_PUBLIC_MQTT_HOST;
+
 type MqttParams = {
   setMqttStatus: (status: MqttStatusType) => void;
   setMqttError: (error: Error | mqtt.ErrorWithReasonCode) => void;
 };
 
 function createMqttClient({ setMqttStatus, setMqttError }: MqttParams) {
+  if (!mqttURL) {
+    throw new Error("MQTT URL is not defined");
+  }
   const client = mqtt
-    .connect("http://mqtt.gatitos.cloud", {
+    .connect(mqttURL, {
       protocol: "wss",
       reconnectPeriod: 5000,
       queueQoSZero: true,

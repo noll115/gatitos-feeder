@@ -9,7 +9,7 @@ services:
     networks:
       - proxy
     environment:
-      - NEXT_PUBLIC_MQTT_HOST=ws://mosquitto:9001
+      - NEXT_PUBLIC_MQTT_HOST=http://mqtt.gatitos.cloud"
     volumes:
       - next_logs:/app/logs
     depends_on:
