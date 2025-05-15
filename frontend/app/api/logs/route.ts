@@ -23,7 +23,7 @@ export interface Logs {
 }
 
 const logLength = Number(process.env.LOG_LENGTH) ?? 10;
-const logsPath = path.join(process.cwd(), "logs.json");
+const logsPath = path.join(process.cwd(), "logs", "logs.json");
 
 async function loadLogs() {
   try {

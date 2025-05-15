@@ -3,13 +3,15 @@ services:
   nextjs:
     build:
       context: ./frontend
-      dockerfile: prod.Dockerfile
-    # ports:
-    #   - "3000:3000"
+      dockerfile: Dockerfile
+    ports:
+      # - "3000:3000"
     networks:
       - proxy
     environment:
       - NEXT_PUBLIC_MQTT_HOST=ws://mosquitto:9001
+    volumes:
+      - next_logs:/app/logs
     depends_on:
       - mosquitto
     restart: unless-stopped
@@ -32,7 +34,7 @@ services:
 volumes:
   mosq_data:
   mosq_log:
-
+  next_logs:
 networks:
   proxy:
     external: true

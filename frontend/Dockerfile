@@ -19,9 +19,13 @@ RUN \
   fi
 
 COPY app ./app
+COPY components ./components
+COPY hooks ./hooks
+COPY utils ./utils
 COPY public ./public
 COPY next.config.ts .
 COPY tsconfig.json .
+COPY postcss.config.mjs .
 
 # Environment variables must be present at build time
 # https://github.com/vercel/next.js/discussions/14030
@@ -33,12 +37,7 @@ ENV NEXT_PUBLIC_MQTT_HOST=${NEXT_PUBLIC_MQTT_HOST}
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # Build Next.js based on the preferred package manager
-RUN \
-  if [ -f yarn.lock ]; then yarn build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then pnpm build; \
-  else npm run build; \
-  fi
+RUN npm run build
 
 # Note: It is not necessary to add an intermediate step that does a full copy of `node_modules` here
 
@@ -47,9 +46,13 @@ FROM base AS runner
 
 WORKDIR /app
 
+
+# Ensure logs.json is created
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+RUN mkdir -p ./logs && chown nextjs:nodejs ./logs
+RUN touch ./logs/logs.json && chown nextjs:nodejs ./logs/logs.json && echo "{}" > ./logs/logs.json
 USER nextjs
 
 COPY --from=builder /app/public ./public
@@ -65,9 +68,6 @@ ENV NEXT_PUBLIC_MQTT_HOST=${NEXT_PUBLIC_MQTT_HOST}
 
 # Uncomment the following line to disable telemetry at run time
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Ensure logs.json is created
-RUN touch ./logs.json && chown nextjs:nodejs ./logs.json && echo "{}" > ./logs.json
 
 # Note: Don't expose ports here, Compose will handle that for us
 

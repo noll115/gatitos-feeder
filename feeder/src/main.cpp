@@ -76,7 +76,7 @@ void log(const String& message) {
   DEBUG_PRINTLN(message);
   WiFiClient httpClient;
   HTTPClient http;
-  http.begin(httpClient, "http://192.168.50.225:3000/api/logs");
+  http.begin(httpClient, "https://feeder.gatitos.cloud/api/logs");
   http.addHeader("Content-Type", "application/json");
   JsonDocument doc;
   doc["id"] = deviceId;
@@ -295,7 +295,8 @@ void loop() {
       if (!feedingOnce) {
         auto currentPortion = scheduler.getCurrentFeedingTime()->portion;
         if (portionsDispensed < currentPortion) {
-          log(String("Portion dispensed: ") + String(portionsDispensed));
+          log(String("Portion dispensed: ") + String(portionsDispensed) +
+              String(" of ") + String(currentPortion));
           changeState(UNLOCKING);
         } else {
           log(String("Feeding finished ") +
