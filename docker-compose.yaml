@@ -1,6 +1,7 @@
 services:
   # # Next.js frontend application
-  nextjs:
+  feeder:
+    container_name: cat-feeder
     build:
       context: ./frontend
       dockerfile: Dockerfile
