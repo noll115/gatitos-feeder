@@ -68,7 +68,7 @@ void setupTopics() {
            deviceId);
   snprintf(ipAddressTopic, sizeof(ipAddressTopic), "devices/%s/ipAddress",
            deviceId);
-  snprintf(logTopic, sizeof(logTopic), "devices/%s/log", deviceId);
+  snprintf(logTopic, sizeof(logTopic), "devices/%s/logs", deviceId);
 }
 
 void log(const String& message) {

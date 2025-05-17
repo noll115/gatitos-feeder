@@ -1,5 +1,5 @@
 import mqtt, { MqttClient } from "mqtt";
-import { loadLogs } from "./logsHandler";
+import { addLog, loadLogs, LogBody } from "./logsHandler";
 
 let mqttClient: MqttClient | null = null;
 
@@ -21,8 +21,9 @@ export const getMqttServerClient = (): MqttClient => {
       console.error("MQTT connection error:", err);
     });
     mqttClient.subscribe("devices/+/logs");
-    mqttClient.on("message", (topic, message) => {
-      console.log(`Received message on topic ${topic}: ${message.toString()}`);
+    mqttClient.on("message", async (topic, message) => {
+      const data: LogBody = JSON.parse(message.toString());
+      await addLog(data.id, data.message);
     });
   }
 
