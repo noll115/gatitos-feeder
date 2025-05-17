@@ -1,5 +1,4 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <Arduino.h>
 #include <ezButton.h>
 #include <PubSubClient.h>
@@ -37,6 +36,7 @@ char commandTopic[50];
 char feedingTimesTopic[50];
 char stateChangeTopic[50];
 char ipAddressTopic[50];
+char logTopic[50];
 
 ezButton button(D1,
                 INPUT_PULLUP);  // create ezButton object that attach to pin D1
@@ -68,36 +68,19 @@ void setupTopics() {
            deviceId);
   snprintf(ipAddressTopic, sizeof(ipAddressTopic), "devices/%s/ipAddress",
            deviceId);
+  snprintf(logTopic, sizeof(logTopic), "devices/%s/log", deviceId);
 }
 
 void log(const String& message) {
-  if (!WiFi.isConnected()) return;
+  if (!mqttClient.connected()) return;
   DEBUG_PRINTLN("Logging message...");
   DEBUG_PRINTLN(message);
-  WiFiClient httpClient;
-  HTTPClient http;
-  http.begin(httpClient, "https://feeder.gatitos.cloud/api/logs");
-  http.addHeader("Content-Type", "application/json");
   JsonDocument doc;
   doc["id"] = deviceId;
   doc["message"] = message;
   String json;
   serializeJson(doc, json);
-  int httpResponseCode = http.POST(json);
-
-#if DEBUG
-  // Print the response
-  if (httpResponseCode > 0) {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println("Response: " + response);
-  } else {
-    Serial.print("Error on sending POST: ");
-    Serial.println(http.errorToString(httpResponseCode).c_str());
-  }
-#endif
-  http.end();
+  mqttClient.publish(logTopic, json.c_str(), false);
 }
 
 void startFeeding(bool feedOnce) {

@@ -8,11 +8,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type", // Allowed headers
 };
 
-interface LogBody {
-  id: string;
-  message: string;
-}
-
 type Log = {
   time: number;
   message: string;
@@ -22,7 +17,6 @@ export interface Logs {
   [key: string]: Log[];
 }
 
-const logLength = Number(process.env.LOG_LENGTH) ?? 10;
 const logsPath = path.join(process.cwd(), "logs", "logs.json");
 
 async function loadLogs() {
@@ -39,35 +33,6 @@ async function loadLogs() {
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: corsHeaders,
-  });
-}
-
-export async function POST(request: NextRequest) {
-  const data: LogBody = await request.json();
-  const { id, message } = data;
-  console.log("Received log:", data);
-  if (!id || !message) {
-    return new Response("Missing required fields", {
-      status: 400,
-      headers: corsHeaders,
-    });
-  }
-  const logs = await loadLogs();
-  if (!logs[id]) {
-    logs[id] = [];
-  }
-  logs[id].unshift({ time: Date.now(), message });
-  if (logs[id].length > logLength) {
-    logs[id].pop();
-  }
-  try {
-    await fs.writeFile(logsPath, JSON.stringify(logs));
-  } catch (error) {
-    console.error("Error writing logs:", error);
-  }
-  return new Response(null, {
-    status: 200,
     headers: corsHeaders,
   });
 }

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ScheduleDisplayInputs } from "./scheduleDisplayInputs";
 import Image from "next/image";
 import Link from "next/link";
-import type { Logs } from "@/app/api/logs/route";
+import type { Logs } from "@/utils/logsHandler";
 
 interface FeederProps {
   id: string;

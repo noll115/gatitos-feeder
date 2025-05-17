@@ -23,6 +23,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  fetch("/api/logs");
   return (
     <html lang="en">
       <body
