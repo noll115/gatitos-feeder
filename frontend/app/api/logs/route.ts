@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
+import { getMqttServerClient } from "@/utils/mqttServerService";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*", // Allow all origins (replace '*' with specific origin for better security)
@@ -38,6 +39,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(request: NextRequest) {
+  getMqttServerClient();
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   if (!id) {
