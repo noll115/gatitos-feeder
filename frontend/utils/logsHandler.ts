@@ -1,6 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
 
+export interface LogBody {
+  id: string;
+  message: string;
+}
+
 type Log = {
   time: number;
   message: string;
