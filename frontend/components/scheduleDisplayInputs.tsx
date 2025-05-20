@@ -22,7 +22,7 @@ export const ScheduleDisplayInputs = ({
         {feedingSchedule.map((schedule, index) => {
           return (
             <div key={schedule.id}>
-              <h3 className="text-lg mb-1">Feeding Schedule {index + 1}</h3>
+              <h3 className="mb-1">Feeding Schedule {index + 1}</h3>
               <div
                 key={index + "loading"}
                 className="skeleton w-full h-10 rounded"
@@ -43,7 +43,7 @@ export const ScheduleDisplayInputs = ({
               key={schedule.id}
               layout
             >
-              <h3 className="text-lg mb-1">Feeding Schedule {index + 1}</h3>
+              <h3 className="mb-1">Feeding Schedule {index + 1}</h3>
               <TimeScheduleInput
                 key={index}
                 currentSchedule={schedule}
@@ -94,11 +94,11 @@ const TimeScheduleInput = ({
   }, [focused]);
 
   return (
-    <div className="flex justify-between px-2">
+    <div className="flex justify-between gap-2 px-2">
       <input
         type="time"
         ref={ref}
-        className="input input-bordered w-full max-w-xs"
+        className="input input-bordered min-w-[8rem] max-w-[15rem]"
         value={`${hrStr}:${minStr}`}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -111,11 +111,11 @@ const TimeScheduleInput = ({
           });
         }}
       />
-      <label className="input w-1/4 max-w-xs">
+      <label className="input w-min">
         <span className="label">Portion</span>
         <input
           type="number"
-          className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-6 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           value={currentSchedule.portion}
           min={0}
           max={10}

@@ -199,7 +199,7 @@ export const CatFeederController = motion.create(({ id, ref }: FeederProps) => {
   return (
     <div
       ref={ref}
-      className="rounded-xl bg-base-300 p-4 shadow-md w-full max-w-xl"
+      className="rounded-xl bg-base-300 p-4 shadow-md w-full max-w-lg"
     >
       <span className="flex items-center justify-between gap-2 ">
         <div className="flex items-center gap-2">

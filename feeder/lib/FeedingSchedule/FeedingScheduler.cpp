@@ -10,34 +10,33 @@ void FeedingScheduler::begin() {
   JsonDocument jsonFeedingTimes;
 
   DeserializationError error = deserializeJson(jsonFeedingTimes, stream);
-  if (error) {
+  if (error || jsonFeedingTimes.isNull()) {
     // Serial.print(F("Failed to read schedules from EEPROM: "));
     // Serial.println(error.c_str());
-    if (error.code() == DeserializationError::InvalidInput) {
-      // Default schedules
-      JsonArray array = jsonFeedingTimes.as<JsonArray>();
-      JsonObject obj = array[0].as<JsonObject>();
-      obj["hour"] = 8;
-      obj["minute"] = 0;
-      obj["portion"] = 2;
-      obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
-      obj = array[1].as<JsonObject>();
-      obj["hour"] = 12;
-      obj["minute"] = 0;
-      obj["portion"] = 2;
-      obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
-      obj = array[2].as<JsonObject>();
-      obj["hour"] = 18;
-      obj["minute"] = 0;
-      obj["portion"] = 2;
-      obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
+    // Default schedules
+    JsonArray array = jsonFeedingTimes.to<JsonArray>();
+    JsonObject obj = array[0].to<JsonObject>();
+    obj["hour"] = 8;
+    obj["minute"] = 0;
+    obj["portion"] = 2;
+    obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
+    obj = array[1].to<JsonObject>();
+    obj["hour"] = 12;
+    obj["minute"] = 0;
+    obj["portion"] = 2;
+    obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
+    obj = array[2].to<JsonObject>();
+    obj["hour"] = 18;
+    obj["minute"] = 0;
+    obj["portion"] = 2;
+    obj["lastDayRan"] = FEEDING_SCHEDULE_NEVER_RAN;
 
-      this->currentDocSize = measureJson(jsonFeedingTimes);
-      EepromStream stream(0, this->currentDocSize);
-      serializeJson(jsonFeedingTimes, stream);
-      stream.flush();
-      // Serial.println("Default schedules written to EEPROM");
-    }
+    this->currentDocSize = measureJson(jsonFeedingTimes);
+    // Serial.println(jsonFeedingTimes.as<String>());
+    EepromStream stream(0, this->currentDocSize);
+    serializeJson(jsonFeedingTimes, stream);
+    stream.flush();
+    // Serial.println("Default schedules written to EEPROM");
   } else {
     this->currentDocSize = measureJson(jsonFeedingTimes);
   }
@@ -50,7 +49,7 @@ void FeedingScheduler::begin() {
     feedingSchedule[i].lastDayRan =
         obj["lastDayRan"] | FEEDING_SCHEDULE_NEVER_RAN;
   }
-  // Serial.println("Starting NTP client...");
+  Serial.println("Starting NTP client...");
   ntpClient.begin();
 }
 

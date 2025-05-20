@@ -9,7 +9,7 @@
 
 // JS50T 5V
 // 0.07A seen 0.1A
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define DEBUG_PRINT(x) Serial.print(x)
 #define DEBUG_PRINTLN(x) Serial.println(x)
@@ -26,7 +26,7 @@ const char* password = "curlymesa627";
 const char* serverUrl = "feeders.gatitos.cloud";
 
 // max length is 20
-const char* deviceId = "loki";
+const char* deviceId = "gatito";
 
 // topics to subscribe
 char setFeedingSchedule[50];
@@ -236,6 +236,7 @@ void changeState(STATES newState) {
 void setup() {
 #if DEBUG
   Serial.begin(115200);
+  delay(1000);
 #endif
   button.setDebounceTime(100);
   setupTopics();
@@ -263,7 +264,7 @@ void loop() {
   ElegantOTA.loop();
   // low = open, high = closed
   int switchState = !button.getState();
-
+  DEBUG_PRINTLN("Switch state: " + String(switchState));
   if (state == START) {
     digitalWrite(MOTOR_PIN, HIGH);
     changeState(UNLOCKING);
@@ -285,7 +286,8 @@ void loop() {
           log(String("Feeding finished ") +
               String(scheduler.getCurrentFeedingTime()->hour) + ":" +
               String(scheduler.getCurrentFeedingTime()->minute) + " " +
-              String(currentPortion));
+              String("Portion dispensed: ") + String(portionsDispensed) +
+              String(" of ") + String(currentPortion));
           changeState(LOCK);
         }
       } else {
