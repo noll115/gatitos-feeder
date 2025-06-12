@@ -9,6 +9,8 @@ services:
         NEXT_PUBLIC_MQTT_HOST: http://mqtt.gatitos.cloud
     # ports:
     # - "3000:3000"
+    networks:
+        proxy:
     environment:
       NEXT_PUBLIC_MQTT_HOST: http://mqtt.gatitos.cloud
     volumes:
