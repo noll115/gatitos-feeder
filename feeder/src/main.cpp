@@ -23,10 +23,10 @@
 
 const char* ssid = "LOKI";
 const char* password = "curlymesa627";
-const char* serverUrl = "feeders.gatitos.cloud";
+const char* serverUrl = "feed.gatitos.cloud";
 
 // max length is 20
-const char* deviceId = "gatito";
+const char* deviceId = "loki";
 
 // topics to subscribe
 char setFeedingSchedule[50];
@@ -137,7 +137,7 @@ unsigned long retryInterval = 10000;
 unsigned long lastReconnectAttemptMQTT = 0;
 
 void tryConnectMQTT() {
-  if (mqttClient.connected() || !WiFi.isConnected()) return;
+  if (!WiFi.isConnected() || mqttClient.connected()) return;
 
   unsigned long currentMillis = millis();
   if (currentMillis - lastReconnectAttemptMQTT >= retryInterval) {
@@ -258,10 +258,12 @@ void setup() {
 
 void loop() {
   button.loop();
-  mqttClient.loop();
+  if (state == IDLE) {
+    mqttClient.loop();
+    server.handleClient();
+    ElegantOTA.loop();
+  }
   scheduler.loop();
-  server.handleClient();
-  ElegantOTA.loop();
   // low = open, high = closed
   int switchState = !button.getState();
   DEBUG_PRINTLN("Switch state: " + String(switchState));
@@ -316,6 +318,7 @@ void loop() {
       }
     }
   }
-
-  tryConnectMQTT();
+  if (state == IDLE) {
+    tryConnectMQTT();
+  }
 }
